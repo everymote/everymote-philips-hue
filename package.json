@@ -1,0 +1,32 @@
+{
+  "name": "everymote-philips-hue",
+  "version": "0.0.0",
+  "description": "everymote-philips-hue =====================",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/everymote/everymote-philips-hue.git"
+  },
+  "keywords": [
+    "everymote",
+    "philips",
+    "hue",
+    "hue",
+    "internet",
+    "of",
+    "things",
+    "IoT"
+  ],
+  "author": "",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "gitHead": "9ab872d083b67a3f87dedc0afbd24f84c65cae57",
+  "dependencies": {
+    "socket.io-client": "~0.9.11",
+    "node-hue-api": "~0.1.1",
+    "MD5": "~1.0.3"
+  }
+}
