@@ -27,7 +27,7 @@ var createThingSettings = function(light, lightSettings){
 	};	
 };
 
-var onState = lightState.create().on().white(500, 100);
+var onState = lightState.create().on().white(250, 100);
 var offState = lightState.create().off();
 var displayResult = function(result){
 	console.log("result");
