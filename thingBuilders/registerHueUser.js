@@ -1,8 +1,10 @@
+var everymote = require('./everymoteConnect');
+
 var createThing = function(){
 	return { 
 		"name": 'Register Hue User',
 		"id": 21345,
-		"iconType": "candy",
+		"iconType": "Lock",
 		"info":"Press link button on hub and pair",
 		"actionControles": [
                 {"type":"button", "name":"Pair", "id":"1"}
@@ -11,10 +13,10 @@ var createThing = function(){
 };
 
 
-var createActionHandler = function(regFunction){ 
+var createActionHandler = function(regFunction, thing){ 
 
 	var handler = function(){
-		regFunction();
+		regFunction(thing.successRegistration);
 	};
 
 	return handler;
@@ -22,11 +24,19 @@ var createActionHandler = function(regFunction){
 
 };
 
-module.exports.getThing = function(regFunction, callback){
+module.exports.reg = function(regFunction, callback){
 
-	  var thing = { settings:createThing(),
-	  	onAction:createActionHandler(regFunction)
-	  }
+	  var thing = { settings:createThing()};
+	  
+	  
+	  var connection =  everymote.connect(thing);
 
-	  callback(thing);
+	
+	  thing.successRegistration = function(){
+	  			thing.socket.emit('updateInfo', "Paired to everymote");
+	  			thing.socket.disconnect();
+	  		};
+
+	  thing.handleAction = createActionHandler(regFunction, thing);
+	  return thing;
 };	

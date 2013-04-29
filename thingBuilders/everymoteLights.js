@@ -1,32 +1,5 @@
-var io = require('socket.io-client'),
+var everymote = require('./everymoteConnect'),
 lightState = require("node-hue-api").lightState;
-var port = 1338,//'80',
-        server = 'localhost'; //'thing.everymote.com';
-
-var connectThing = function(thing){
-        console.log(thing);
-        var socket = io.connect('http://' + server + ':' + port + '/thing',
-                {"force new connection":true 
-                        ,'reconnect': true
-                        ,'reconnection delay': 5000
-                        ,'max reconnection attempts': 100000000000000000});
-        
-        thing.socket = socket;
-        socket.on('connect', function () {
-                console.log('connected');
-                socket.emit('setup', thing.settings);
-        }).on('doAction', function (action) {
-                console.log(action);
-                thing.handleAction(action,socket);
-        }).on('connect_failed', function () {
-                console.log('error:' + socket );
-        }).on('disconnect', function () {
-                console.log('disconnected');
-        }).on('reconnect', function () {
-               console.log('reconnect');
-             
-        });
-};
 
 var getHSLColor = function(lightState){
 	var hue = (lightState.hue / 65535) ;
@@ -63,6 +36,7 @@ var displayResult = function(result){
 
 var createActonHandler = function(hueApi, light){
 	var actions = {};
+	var processAcction = false;
 		actions.on = function(value){
 			hueApi.setLightState(light.id, onState).done();
 		};
@@ -70,6 +44,8 @@ var createActonHandler = function(hueApi, light){
 			hueApi.setLightState(light.id, offState).done();
 		};
 		actions.color = function(value, socket){
+			if(processAcction) return;
+			processAcction = true;
 			//hueApi.setLightState(light.id, offState).done();
 			socket.emit('updateActionControlerState', {"id":"color", 
 				"curentState":{"hue":value.hue,"bri":value.bri,"sat":value.sat}});
@@ -81,8 +57,8 @@ var createActonHandler = function(hueApi, light){
 			console.log(value);
 			console.log(data);
 			hueApi.setLightState(light.id, data)
-					.then(displayResult)
-    				.fail(displayResult)
+					.then(function(result){processAcction = false; displayResult(result);})
+    				.fail(function(result){processAcction = false; displayResult(result);})
     				.done();
 		};
 
@@ -99,7 +75,7 @@ var registerToEverymote = function(light, hueApi){
 		var thing = {};
 		thing.settings = createThingSettings(light, lightSettings);
 		thing.handleAction = createActonHandler(hueApi, light);
-		connectThing(thing);
+		everymote.connect(thing);
 	};
 
 	return reg;

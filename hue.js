@@ -17,11 +17,15 @@ var registerLights = function(result){
 	
 }
 
-var registerUser = function() {
+var registerUser = function(onSuccess) {
     console.log("reggar usern");
-    
+    var success = function(){
+        onSuccess();
+        login();
+    };
+
     hue.registerUser(hostname, username, userDescription)
-    .then(displayResult)
+    .then(success)
     .fail(displayResult)
     .done();
 
@@ -30,14 +34,12 @@ var registerUser = function() {
 var prepForRegisterUser = function(result) {
 	if(result.type === 1 || result.type === 101){
     	console.log("tryck på knappen");
-    	//regga action på everymote
-		//registerUser();
+        hueUserHandler.reg(registerUser);
 	}
 
-	displayResult(result);
 };
 
-var login = function() {
+function login() {
 	api = new hue.HueApi(hostname, md5(username));
 	api.connect().then(registerLights).fail(prepForRegisterUser).done();
 };
