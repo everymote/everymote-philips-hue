@@ -28,5 +28,8 @@
     "socket.io-client": "~0.9.11",
     "node-hue-api": "~0.1.1",
     "MD5": "~1.0.3"
+  },
+  "bin": {
+    "everymote-philips-hue": "bin/everymote-philips-hue.js"
   }
 }
