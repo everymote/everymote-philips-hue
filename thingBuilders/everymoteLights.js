@@ -38,7 +38,7 @@ var createActonHandler = function(hueApi, light){
 	var actions = {};
 	var processAcction = false;
 		actions.on = function(value){
-			hueApi.setLightState(light.id, onState).done();
+			hueApi.setLightState(light.id, onState).fail(function(e){console.log(e);}).done();
 		};
 		actions.off = function(value){
 			hueApi.setLightState(light.id, offState).done();
